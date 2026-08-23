@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import SetupNotice from './components/SetupNotice'
+import { isSupabaseConfigured } from './lib/supabaseClient'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import EquipmentList from './pages/EquipmentList'
@@ -12,6 +14,10 @@ import AdminDamageReports from './pages/AdminDamageReports'
 import AdminEquipment from './pages/AdminEquipment'
 
 export default function App() {
+  if (!isSupabaseConfigured) {
+    return <SetupNotice />
+  }
+
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />

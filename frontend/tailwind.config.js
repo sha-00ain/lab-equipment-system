@@ -4,16 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#1B1F3B',
-        brass: '#C08A2E',
-        paper: '#F7F5F0',
-        slate: {
-          850: '#1E2333'
-        }
+        ink: '#182333',
+        paper: '#F5F6F8',
+        line: '#E2E4EA',
+        teal: {
+          50: '#EAF6F4',
+          600: '#147D6F',
+          700: '#0F6459'
+        },
+        amber: {
+          50: '#FBF2E3',
+          600: '#C9862B'
+        },
+        danger: '#C0392B'
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
-        body: ['"Inter"', 'sans-serif']
+        display: ['"Sora"', 'sans-serif'],
+        body: ['"Inter"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace']
+      },
+      borderRadius: {
+        xl: '0.75rem'
       }
     }
   },

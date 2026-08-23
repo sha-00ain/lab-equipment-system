@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Alert from '../components/Alert'
 
 export default function Login() {
   const { signIn } = useAuth()
@@ -26,42 +27,39 @@ export default function Login() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white border border-ink/10 rounded-xl p-8">
-        <h1 className="font-display text-2xl font-700 text-ink mb-1">Welcome back</h1>
-        <p className="text-sm text-ink/60 mb-6">Sign in to LabTrack to borrow or manage equipment.</p>
+      <form onSubmit={handleSubmit} className="card w-full max-w-sm p-8">
+        <p className="tag bg-teal-50 text-teal-700 inline-block mb-3">Sign in</p>
+        <h1 className="font-display text-2xl font-bold text-ink mb-1">Welcome back</h1>
+        <p className="text-sm text-ink/50 mb-6">Sign in to borrow or manage lab equipment.</p>
 
-        {error && <p className="text-sm text-red-600 bg-red-50 rounded-md p-2 mb-4">{error}</p>}
+        <Alert type="error">{error}</Alert>
 
-        <label className="block text-sm font-medium text-ink/80 mb-1">Email</label>
+        <label className="block text-sm font-medium text-ink/70 mb-1">Email</label>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-ink/15 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-brass"
+          className="input-field mb-4"
           placeholder="you@university.edu"
         />
 
-        <label className="block text-sm font-medium text-ink/80 mb-1">Password</label>
+        <label className="block text-sm font-medium text-ink/70 mb-1">Password</label>
         <input
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-ink/15 rounded-md px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-brass"
+          className="input-field mb-6"
           placeholder="••••••••"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-2 rounded-md bg-ink text-paper font-medium hover:bg-ink/90 disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
 
-        <p className="text-sm text-ink/60 mt-4 text-center">
-          Don't have an account? <Link to="/register" className="text-brass font-medium">Create one</Link>
+        <p className="text-sm text-ink/50 mt-5 text-center">
+          Don't have an account? <Link to="/register" className="text-teal-600 font-medium">Create one</Link>
         </p>
       </form>
     </div>

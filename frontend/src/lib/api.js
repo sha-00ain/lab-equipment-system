@@ -6,14 +6,21 @@ async function request(path, { method = 'GET', body } = {}) {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token
 
-  const res = await fetch(`${API_URL}${path}`, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {})
-    },
-    body: body ? JSON.stringify(body) : undefined
-  })
+  let res
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined
+    })
+  } catch (networkErr) {
+    throw new Error(
+      `Could not reach the server at ${API_URL}. Check that the backend is running and that VITE_API_URL is set correctly.`
+    )
+  }
 
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {

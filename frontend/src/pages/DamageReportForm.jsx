@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { supabase } from '../lib/supabaseClient'
+import Alert from '../components/Alert'
 
 export default function DamageReportForm() {
   const [equipmentList, setEquipmentList] = useState([])
@@ -44,7 +45,7 @@ export default function DamageReportForm() {
         image_url
       })
 
-      setMessage('Damage report submitted. Lab staff will review it shortly.')
+      setMessage('Report submitted — lab staff will review it shortly.')
       setForm({ equipment_id: '', description: '' })
       setFile(null)
     } catch (err) {
@@ -56,19 +57,19 @@ export default function DamageReportForm() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
-      <h1 className="font-display text-2xl font-700 text-ink mb-1">Report Damage</h1>
-      <p className="text-ink/60 text-sm mb-6">Let lab staff know if equipment is broken, faulty, or missing parts.</p>
+      <h1 className="font-display text-2xl font-bold text-ink mb-1">Report Damage</h1>
+      <p className="text-ink/50 text-sm mb-6">Let lab staff know if equipment is broken, faulty, or missing parts.</p>
 
-      {message && <p className="text-sm text-emerald-700 bg-emerald-50 rounded-md p-3 mb-4">{message}</p>}
-      {error && <p className="text-sm text-red-600 bg-red-50 rounded-md p-3 mb-4">{error}</p>}
+      <Alert type="success">{message}</Alert>
+      <Alert type="error">{error}</Alert>
 
-      <form onSubmit={handleSubmit} className="bg-white border border-ink/10 rounded-xl p-6">
-        <label className="block text-sm font-medium text-ink/80 mb-1">Equipment</label>
+      <form onSubmit={handleSubmit} className="card p-6">
+        <label className="block text-sm font-medium text-ink/70 mb-1">Equipment</label>
         <select
           required
           value={form.equipment_id}
           onChange={(e) => setForm((f) => ({ ...f, equipment_id: e.target.value }))}
-          className="w-full border border-ink/15 rounded-md px-3 py-2 mb-4"
+          className="input-field mb-4"
         >
           <option value="">Select equipment…</option>
           {equipmentList.map((eq) => (
@@ -76,17 +77,17 @@ export default function DamageReportForm() {
           ))}
         </select>
 
-        <label className="block text-sm font-medium text-ink/80 mb-1">What happened?</label>
+        <label className="block text-sm font-medium text-ink/70 mb-1">What happened?</label>
         <textarea
           required
           rows={4}
           value={form.description}
           onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-          className="w-full border border-ink/15 rounded-md px-3 py-2 mb-4"
+          className="input-field mb-4"
           placeholder="Describe the damage or fault in detail…"
         />
 
-        <label className="block text-sm font-medium text-ink/80 mb-1">Photo (optional)</label>
+        <label className="block text-sm font-medium text-ink/70 mb-1">Photo (optional)</label>
         <input
           type="file"
           accept="image/*"
@@ -94,11 +95,7 @@ export default function DamageReportForm() {
           className="w-full text-sm mb-6"
         />
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full py-2 rounded-md bg-ink text-paper font-medium disabled:opacity-50"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary w-full">
           {submitting ? 'Submitting…' : 'Submit report'}
         </button>
       </form>

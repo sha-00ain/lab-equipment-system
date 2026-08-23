@@ -10,22 +10,13 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
-// --- CORS: only allow the frontend origin(s) listed in .env ---
-const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim());
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    }
-  })
-);
+// --- CORS ---
+// Reflects whatever origin the request came from, so a mismatched or
+// unset CLIENT_ORIGIN env var never silently blocks the frontend with a
+// browser-side "Failed to fetch" error. Safe here because this API does
+// not use cookies and every route already checks the user's Supabase
+// JWT + role, so origin restriction is not the security boundary.
+app.use(cors({ origin: true }));
 
 app.use(express.json());
 
