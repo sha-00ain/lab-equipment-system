@@ -14,6 +14,8 @@ export default function AdminEquipment() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -68,14 +70,18 @@ export default function AdminEquipment() {
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm('Delete this equipment permanently? This cannot be undone.')) return
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
     setError('')
     try {
-      await api.deleteEquipment(id)
+      await api.deleteEquipment(deleteTarget.id)
+      setDeleteTarget(null)
       await load()
     } catch (err) {
       setError(err.message)
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -118,7 +124,7 @@ export default function AdminEquipment() {
                   <td className="p-3 text-ink/60">{item.location}</td>
                   <td className="p-3 text-right whitespace-nowrap">
                     <button onClick={() => openEdit(item)} className="text-teal-600 font-medium mr-3">Edit</button>
-                    <button onClick={() => handleDelete(item.id)} className="text-danger font-medium">Delete</button>
+                    <button onClick={() => setDeleteTarget(item)} className="text-danger font-medium">Delete</button>
                   </td>
                 </tr>
               ))}
@@ -203,6 +209,34 @@ export default function AdminEquipment() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-ink/40 flex items-center justify-center px-4 z-30">
+          <div className="card p-6 w-full max-w-sm bg-white">
+            <h2 className="font-display text-lg font-bold text-ink mb-2">Delete equipment?</h2>
+            <p className="text-sm text-ink/60 mb-6">
+              This will permanently delete <span className="font-medium text-ink">{deleteTarget.name}</span>. This cannot be undone.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="btn-secondary flex-1"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 py-2 rounded-lg bg-danger text-white text-sm font-medium hover:bg-danger/90 disabled:opacity-40"
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

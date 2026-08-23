@@ -6,6 +6,9 @@ async function request(path, { method = 'GET', body } = {}) {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token
 
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 15000)
+
   let res
   try {
     res = await fetch(`${API_URL}${path}`, {
@@ -14,12 +17,18 @@ async function request(path, { method = 'GET', body } = {}) {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
-      body: body ? JSON.stringify(body) : undefined
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal
     })
   } catch (networkErr) {
+    if (networkErr.name === 'AbortError') {
+      throw new Error('The server took too long to respond. Please try again.')
+    }
     throw new Error(
       `Could not reach the server at ${API_URL}. Check that the backend is running and that VITE_API_URL is set correctly.`
     )
+  } finally {
+    clearTimeout(timeoutId)
   }
 
   const data = await res.json().catch(() => ({}))
